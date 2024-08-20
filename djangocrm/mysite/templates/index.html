@@ -2,13 +2,42 @@
 
 {% block content %}
 
-<div class="col-md-6 offset-md-3">
-
 {% if user.is_authenticated %}
 
-<h1> Hello World </h1>
+{% if records %}
+<table class="table table-hover table-bordered">
+	<thead>
+		<tr class="table-dark clickable-row">
+			<th scope="col">ID</th>
+			<th scope="col">Name</th>
+			<th scope="col">Email</th>
+			<th scope="col">Phone</th>
+			<th scope="col">Address</th>
+			<th scope="col">City</th>
+			<th scope="col">County/State</th>
+			<th scope="col">Postcode/ZIP Code</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for record in records %}
+		<tr class="table-secondary">
+			<th scope="row"><a href="{% url 'individual_record' record.id %}" class="btn">{{record.id}}</a></th>
+			<td><a href="{% url 'individual_record' record.id %}" class="btn">{{record.first_name}} {{record.last_name}}</a></td>
+			<td><a href="{% url 'individual_record' record.id %}" class="btn">{{record.email}}</a></td>
+			<td><a href="{% url 'individual_record' record.id %}" class="btn">{{record.phone}}</a></td>
+			<td><a href="{% url 'individual_record' record.id %}" class="btn">{{record.address}}</a></td>
+			<td><a href="{% url 'individual_record' record.id %}" class="btn">{{record.city}}</a></td>
+			<td><a href="{% url 'individual_record' record.id %}" class="btn">{{record.state}}</a></td>
+			<td><a href="{% url 'individual_record' record.id %}" class="btn">{{record.post_code}}</a></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endif %}
 
 {% else %}
+
+<div class="col-md-6 offset-md-3">
 
 <h1> Login </h1>
 
@@ -32,3 +61,8 @@
 
 {% endblock %}
 
+<script>
+
+
+
+</script>

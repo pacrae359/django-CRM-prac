@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.contrib.auth import authenticate, login, logout
 
@@ -6,7 +6,9 @@ from django.contrib import messages
 
 from django.urls import reverse
 
-from .forms import SignUpForm
+from .forms import SignUpForm, AddRecordForm, ChangeRecordForm
+
+from .models import Record
 
 # Create your views here.
 
@@ -14,6 +16,8 @@ from .forms import SignUpForm
 def home(request):
 
 	#Check if the request being recieved is from the login form
+
+	records = Record.objects.all()
 
 	if request.method == "POST":
 
@@ -32,8 +36,52 @@ def home(request):
 			return redirect(reverse('home'))
 
 	else:
-		return render(request, 'index.html', {})
+		return render(request, 'index.html', {'records':records})
 
+def individual_record(request,pk):
+	if request.user.is_authenticated:
+		record = Record.objects.get(id=pk)
+		return render(request, 'individual_record.html', {'record':record})
+	else:
+		messages.warning(request, 'You must be logged in to access this page!')
+		return redirect(reverse('home'))
+
+def add_record(request):
+	if request.user.is_authenticated:
+		if request.method=="POST":
+			form = AddRecordForm(request.POST)
+			if form.is_valid():
+				form.save()
+			return redirect(reverse('home'))
+		else:
+			form = AddRecordForm()
+			return render(request, 'add_record.html', {'form':form})
+	else:
+		messages.warning(request, 'You must be logged in to access this page!')
+		return redirect(reverse('home'))
+
+def edit_record(request, pk):
+	if request.user.is_authenticated:
+		try:
+			record = Record.objects.get(id=pk)
+		except Record.DoesNotExist:
+			messages.warning(request, 'The requested record does not exist!')
+			return redirect(reverse('home'))
+		if request.method=="POST":
+			form = ChangeRecordForm(request.POST, instance=record)
+			if form.is_valid:
+				form.save()
+				messages.success(request, "You have updated that record successfully!")
+				return redirect(reverse('home'))
+		else:
+			form = ChangeRecordForm(instance=record)
+			return render(request,'edit_record.html',{'form':form, 'record':record})
+	else:
+		messages.warning(request, 'You must be logged in to access this page!')
+		return redirect(reverse('home'))
+
+	messages.warning(request, 'That record does not exist!')
+	return redirect(reverse('home'))
 
 def logout_user(request):
 	logout(request)
@@ -49,7 +97,7 @@ def register_user(request):
 			password = form.cleaned_data['password1']
 			user = authenticate(request, username=username, password=password)
 			login(request, user)
-			messages.success(request, "You Have Registered Successfully!")
+			messages.warning(request, "You Have Registered Successfully!")
 			return redirect(reverse('home'))
 	else:
 		form = SignUpForm()
