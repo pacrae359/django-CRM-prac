@@ -38,6 +38,14 @@ def home(request):
 	else:
 		return render(request, 'index.html', {'records':records})
 
+def delete_record(request,pk):
+	if request.user.is_authenticated:
+		if request.method=="POST":
+			record = Record.objects.get(id=pk)
+			record.delete()
+			messages.success(request, 'The selected record has been deleted successfully!')
+			return redirect(reverse('home'))
+
 def individual_record(request,pk):
 	if request.user.is_authenticated:
 		record = Record.objects.get(id=pk)
