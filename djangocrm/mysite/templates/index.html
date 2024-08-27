@@ -5,17 +5,94 @@
 {% if user.is_authenticated %}
 
 {% if records %}
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+
 <table class="table table-hover table-bordered">
 	<thead>
 		<tr class="table-dark clickable-row">
-			<th scope="col">ID</th>
-			<th scope="col">Name</th>
-			<th scope="col">Email</th>
-			<th scope="col">Phone</th>
-			<th scope="col">Address</th>
-			<th scope="col">City</th>
-			<th scope="col">County/State</th>
-			<th scope="col">Postcode/ZIP Code</th>
+			<th scope="col"><a href="?sort_by=id&order={% if sort_by == 'id' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			ID
+			{% if sort_by == 'id' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
+			<th scope="col"><a href="?sort_by=last_name&order={% if sort_by == 'last_name' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			Name
+			{% if sort_by == 'last_name' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
+			<th scope="col"><a href="?sort_by=email&order={% if sort_by == 'email' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			Email
+			{% if sort_by == 'email' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
+			<th scope="col"><a href="?sort_by=phone&order={% if sort_by == 'phone' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			Phone
+			{% if sort_by == 'phone' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
+			<th scope="col"><a href="?sort_by=address&order={% if sort_by == 'address' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			Address
+			{% if sort_by == 'address' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
+			<th scope="col"><a href="?sort_by=city&order={% if sort_by == 'city' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			City
+			{% if sort_by == 'city' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
+			<th scope="col"><a href="?sort_by=state&order={% if sort_by == 'state' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			County/State
+			{% if sort_by == 'state' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
+			<th scope="col"><a href="?sort_by=post_code&order={% if sort_by == 'post_code' and order == 'desc' %}asc{% else %}desc{% endif %}">
+			Postcode/ZIP Code
+			{% if sort_by == 'post_code' %}
+				{% if order == 'asc' %}
+					(▲)
+				{% else %}
+					(▼)
+				{% endif %}
+			{% endif %}
+			</a></th>
 		</tr>
 	</thead>
 	<tbody>

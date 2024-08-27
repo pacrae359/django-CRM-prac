@@ -15,10 +15,15 @@ from .models import Record
 
 def home(request):
 
+	sort_by = request.GET.get('sort_by', 'last_name')
+	order = request.GET.get('order','desc')
+	
+	if order == "desc":
+		records = Record.objects.all().order_by(f"-{sort_by}").values()
+	else:
+		records = Record.objects.all().order_by(sort_by).values()
+
 	#Check if the request being recieved is from the login form
-
-	records = Record.objects.all()
-
 	if request.method == "POST":
 
 		#Retrieve the password and username information from the form
@@ -36,8 +41,8 @@ def home(request):
 			return redirect(reverse('home'))
 
 	else:
-		return render(request, 'index.html', {'records':records})
-
+		return render(request, 'index.html', {'records':records, 'sort_by':sort_by , 'order':order})
+		
 def delete_record(request,pk):
 	if request.user.is_authenticated:
 		if request.method=="POST":
