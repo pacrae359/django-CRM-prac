@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 
 from django.contrib import messages
 
+from django.db.models import Q
+
 from django.urls import reverse
 
 from .forms import SignUpForm, AddRecordForm, ChangeRecordForm
@@ -42,7 +44,26 @@ def home(request):
 
 	else:
 		return render(request, 'index.html', {'records':records, 'sort_by':sort_by , 'order':order})
-		
+
+def search_record(request):
+	if request.user.is_authenticated:
+		if request.method=="POST":
+			searched = request.POST['searched']
+			#Check if the search matches any factor of any record in the database, if so, show those in the search results.
+			records = Record.objects.filter(
+				Q(last_name__icontains=searched)|Q(first_name__icontains=searched)|Q(email__icontains=searched)|Q(phone__icontains=searched)|Q(address__icontains=searched)|Q(city__icontains=searched)|Q(state__icontains=searched)|Q(post_code__icontains=searched)
+				).values()
+			if records:
+				return render(request, 'search_record.html', {'searched': searched , 'records':records})
+			else:
+				messages.warning(request, "The search yielded no results!")
+				return redirect(reverse('home'))
+		messages.warning(request, "Please enter a search query before going to the search page!")
+		return redirect(reverse('home'))
+	else:
+		messages.warning(request, 'You are not authorised to access that page!')
+		return redirect(reverse('home'))
+
 def delete_record(request,pk):
 	if request.user.is_authenticated:
 		if request.method=="POST":
